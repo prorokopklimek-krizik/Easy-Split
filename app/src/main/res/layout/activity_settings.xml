@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Uživatelské jméno -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jméno uživatele" />
+
+        <EditText
+            android:id="@+id/userNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Zadejte jméno" />
+
+        <!-- Výběr barvy aplikace -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Barva aplikace"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/colorSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- Seznam permanentních členů -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Permanentní členové"
+            android:layout_marginTop="16dp" />
+
+        <LinearLayout
+            android:id="@+id/memberListContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <!-- Tlačítko pro přidání člena, spouští samostatnou aktivitu -->
+        <Button
+            android:id="@+id/addMemberButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Přidat člena"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Tlačítko pro uložení nastavení -->
+        <Button
+            android:id="@+id/saveSettingsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Uložit nastavení"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>

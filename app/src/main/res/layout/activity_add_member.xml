@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Přidat člena"
+        android:textSize="20sp"
+        android:layout_marginBottom="16dp" />
+
+    <EditText
+        android:id="@+id/memberNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Jméno člena" />
+
+    <EditText
+        android:id="@+id/multiplierEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Násobitel (např. 1 nebo 2)"
+        android:inputType="number"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/submitMemberButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Přidat"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>

@@ -1,0 +1,11 @@
+<resources>
+    <string-array name="color_options">
+        <item>Černá</item>
+        <item>Tmavě modrá</item>
+        <item>Tmavě červená</item>
+        <item>Tmavě zelená</item>
+        <item>Tmavě žlutá</item>
+    </string-array>
+
+    <string name="app_name">Easy Split</string>
+</resources>

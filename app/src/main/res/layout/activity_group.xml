@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Toolbar s názvem skupiny -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/groupToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white" />
+
+    <!-- Editovatelný název skupiny -->
+    <EditText
+        android:id="@+id/groupNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Název skupiny"
+        android:textSize="20sp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Sekce pro přidání člena -->
+    <TextView
+        android:id="@+id/addMemberLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Přidat člena:"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Spinner se seznamem dostupných členů (z DB) -->
+        <Spinner
+            android:id="@+id/availableMembersSpinner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <!-- Tlačítko pro otevření AddMemberActivity -->
+        <Button
+            android:id="@+id/addNewMemberButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:layout_marginStart="8dp" />
+
+        <!-- Tlačítko pro přidání vybraného člena do skupiny -->
+        <Button
+            android:id="@+id/addMemberToGroupButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Přidat"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Label pro seznam členů skupiny -->
+    <TextView
+        android:id="@+id/groupMembersLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Členové skupiny:"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Kontejner pro zobrazení členů skupiny -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:id="@+id/groupMembersContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+</LinearLayout>
