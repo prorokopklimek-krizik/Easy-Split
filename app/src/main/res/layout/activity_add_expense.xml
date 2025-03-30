@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Přidat utratu"
+            android:textSize="20sp"
+            android:paddingBottom="16dp"/>
+
+        <!-- Název utraty (povinné) -->
+        <EditText
+            android:id="@+id/expenseNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Název utraty"/>
+
+        <!-- Částka utraty (povinné) -->
+        <EditText
+            android:id="@+id/expenseAmountEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Částka"
+            android:inputType="numberDecimal"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Popis (nepovinné) -->
+        <EditText
+            android:id="@+id/expenseDescriptionEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Popis (volitelné)"
+            android:layout_marginTop="8dp"/>
+
+        <!-- EditText pro zadání lokace nákupu -->
+        <EditText
+            android:id="@+id/locationEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Lokace nákupu"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Tlačítko pro nastavení lokace pomocí mapy -->
+        <Button
+            android:id="@+id/setLocationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vybrat lokaci na mapě"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Tlačítko pro focení účtenky -->
+        <Button
+            android:id="@+id/addPhotoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Focení účtenky"
+            android:layout_marginTop="8dp"/>
+
+        <!-- ImageView pro zobrazení fotografie účtenky -->
+        <ImageView
+            android:id="@+id/receiptImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"/>
+
+        <!-- Tlačítko pro uložení utraty -->
+        <Button
+            android:id="@+id/submitExpenseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Uložit utratu"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</ScrollView>

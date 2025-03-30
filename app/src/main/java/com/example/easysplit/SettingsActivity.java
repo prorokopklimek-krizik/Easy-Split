@@ -1,31 +1,22 @@
 package com.example.easysplit;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final int REQUEST_ADD_MEMBER = 1;
-
-    private EditText userNameEditText;
     private Spinner colorSpinner;
-    private LinearLayout memberListContainer;
-    private Button addMemberButton;
     private Button saveSettingsButton;
-
     private DBHelper dbHelper;
 
     @Override
@@ -33,119 +24,87 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        userNameEditText = findViewById(R.id.userNameEditText);
         colorSpinner = findViewById(R.id.colorSpinner);
-        memberListContainer = findViewById(R.id.memberListContainer);
-        addMemberButton = findViewById(R.id.addMemberButton);
         saveSettingsButton = findViewById(R.id.saveSettingsButton);
+        dbHelper = new DBHelper(this);
 
-        // Nastavení Spinneru s možnostmi barev (definováno v strings.xml)
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        // Nastavení spinneru s možnostmi barev (definované v res/values/strings.xml)
+        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.color_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorSpinner.setAdapter(adapter);
 
-        dbHelper = new DBHelper(this);
-
-        // Načtení uložených nastavení a permanentních členů
-        loadSettings();
-        loadPermanentMembers();
-
-        addMemberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Spuštění aktivity pro přidání člena
-                Intent intent = new Intent(SettingsActivity.this, AddMemberActivity.class);
-                startActivityForResult(intent, REQUEST_ADD_MEMBER);
+        // Načtení uložené barvy z DB a nastavení spinneru
+        String savedColor = dbHelper.getAppColor();
+        if (savedColor != null && !savedColor.isEmpty()) {
+            int pos = adapter.getPosition(savedColor);
+            if (pos >= 0) {
+                colorSpinner.setSelection(pos);
             }
+            updateBackgroundColor(savedColor);
+        }
+
+        // Listener spinneru – při změně okamžitě aktualizuje barvu
+        colorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedColor = parent.getItemAtPosition(position).toString();
+                dbHelper.saveUserSettings("", selectedColor);
+                updateBackgroundColor(selectedColor);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         saveSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                saveSettings();
+            public void onClick(View v) {
+                Toast.makeText(SettingsActivity.this, "Nastavení uloženo", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadSettings() {
-        String storedUserName = dbHelper.getUserName();
-        String storedColor = dbHelper.getAppColor();
-
-        if (!storedUserName.isEmpty()) {
-            userNameEditText.setText(storedUserName);
-        }
-        if (!storedColor.isEmpty()) {
-            // Nastavení výběru spinneru podle uložené barvy
-            ArrayAdapter adapter = (ArrayAdapter) colorSpinner.getAdapter();
-            int position = adapter.getPosition(storedColor);
-            if (position >= 0) {
-                colorSpinner.setSelection(position);
-            }
-            updateBackgroundColor(storedColor);
-        }
-    }
-
-    private void loadPermanentMembers() {
-        memberListContainer.removeAllViews();
-        ArrayList<DBHelper.PermanentMember> members = dbHelper.getPermanentMembers();
-        for (DBHelper.PermanentMember member : members) {
-            TextView memberTextView = new TextView(this);
-            memberTextView.setText(member.name + " - násobitel: " + member.multiplier);
-            memberTextView.setPadding(16, 16, 16, 16);
-            memberTextView.setTextSize(16);
-            memberListContainer.addView(memberTextView);
-        }
-    }
-
-    private void saveSettings() {
-        String userName = userNameEditText.getText().toString().trim();
-        String selectedColor = colorSpinner.getSelectedItem().toString();
-        if (userName.isEmpty()) {
-            Toast.makeText(this, "Vyplňte prosím jméno uživatele", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        dbHelper.saveUserSettings(userName, selectedColor);
-        Toast.makeText(this, "Nastavení uloženo", Toast.LENGTH_SHORT).show();
-        updateBackgroundColor(selectedColor);
-    }
-
     /**
-     * Aktualizuje pozadí obrazovky podle názvu barvy.
-     * Např.: "Modrá", "Červená", "Zelená", "Žlutá"
+     * Aktualizuje pozadí a textovou barvu dle zvolené barvy.
+     *
+     * @param colorName Například "Černá", "Tmavě modrá", "Tmavě červená", "Tmavě zelená", "Tmavě žlutá"
      */
     private void updateBackgroundColor(String colorName) {
-        int color = Color.WHITE;
+        int bgColor = Color.WHITE;
         switch (colorName) {
             case "Černá":
-                color = Color.BLACK;
+                bgColor = Color.BLACK;
                 break;
             case "Tmavě modrá":
-                color = Color.rgb(0, 0, 139);  // tmavě modrá
+                bgColor = Color.rgb(0, 0, 139);
                 break;
             case "Tmavě červená":
-                color = Color.rgb(139, 0, 0);  // tmavě červená
+                bgColor = Color.rgb(139, 0, 0);
                 break;
             case "Tmavě zelená":
-                color = Color.rgb(0, 100, 0);  // tmavě zelená
+                bgColor = Color.rgb(0, 100, 0);
                 break;
             case "Tmavě žlutá":
-                color = Color.rgb(153, 153, 0);  // tmavě žlutá
+                bgColor = Color.rgb(153, 153, 0);
                 break;
         }
         View rootView = findViewById(android.R.id.content);
-        rootView.setBackgroundColor(color);
+        rootView.setBackgroundColor(bgColor);
+        int textColor = (bgColor == Color.BLACK || bgColor == Color.rgb(0, 0, 139) ||
+                bgColor == Color.rgb(139, 0, 0) || bgColor == Color.rgb(0, 100, 0) ||
+                bgColor == Color.rgb(153, 153, 0)) ? Color.WHITE : Color.BLACK;
+        updateTextColorRecursive(rootView, textColor);
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_ADD_MEMBER && resultCode == RESULT_OK && data != null) {
-            String memberName = data.getStringExtra("memberName");
-            int multiplier = data.getIntExtra("multiplier", 1);
-            dbHelper.insertPermanentMember(memberName, multiplier);
-            loadPermanentMembers();
+    private void updateTextColorRecursive(View view, int textColor) {
+        if (view instanceof TextView) {
+            ((TextView)view).setTextColor(textColor);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        if (view instanceof ViewGroup) {
+            ViewGroup group = (ViewGroup)view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                updateTextColorRecursive(group.getChildAt(i), textColor);
+            }
+        }
     }
 }
