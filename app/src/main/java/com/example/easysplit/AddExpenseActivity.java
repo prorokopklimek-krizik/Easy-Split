@@ -123,7 +123,7 @@ public class AddExpenseActivity extends AppCompatActivity {
                     return;
                 }
                 // Přidáme lokaci do popisu
-                String fullDescription = expenseDescription + "\nLocation: " + locationInput;
+                String fullDescription = expenseDescription + "\nAdres: " + locationInput;
                 if(isEditing) {
                     if(expenseId == -1) {
                         Toast.makeText(AddExpenseActivity.this, "Error: Invalid expense ID", Toast.LENGTH_SHORT).show();

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,10 +34,11 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
+        // Nastavení toolbaru, který zobrazuje název skupiny (nastavuje se přes setTitle)
         Toolbar toolbar = findViewById(R.id.groupToolbar);
         setSupportActionBar(toolbar);
 
-        // Nastavení titulu toolbaru z dat z Intentu
+        // Načtení dat o skupině z Intentu
         groupId = getIntent().getIntExtra("groupId", -1);
         groupName = getIntent().getStringExtra("groupName");
         if (groupName != null && !groupName.isEmpty()) {
@@ -48,7 +50,7 @@ public class GroupActivity extends AppCompatActivity {
         addMemberButton = findViewById(R.id.addMemberButton);
         dbHelper = new DBHelper(this);
 
-        // Kliknutí na toolbar (titulek) spustí dialog pro úpravu názvu skupiny
+        // Kliknutí na toolbar (celý panel) umožní úpravu názvu skupiny
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +58,7 @@ public class GroupActivity extends AppCompatActivity {
             }
         });
 
-        // Tlačítko pro přidání člena
+        // Tlačítko pro přidání nového člena vyvolá dialog pro zadání jména a násobitele
         addMemberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +86,7 @@ public class GroupActivity extends AppCompatActivity {
                 if (!newName.isEmpty()) {
                     groupName = newName;
                     getSupportActionBar().setTitle(newName);
-                    // Aktualizaci názvu skupiny v DB lze doplnit, pokud je potřeba.
+                    // Volitelně aktualizujte název skupiny v databázi.
                 } else {
                     Toast.makeText(GroupActivity.this, "Název nesmí být prázdný", Toast.LENGTH_SHORT).show();
                 }
@@ -136,23 +138,24 @@ public class GroupActivity extends AppCompatActivity {
         memberListContainer.removeAllViews();
         List<DBHelper.GroupMember> members = dbHelper.getGroupMembers(groupId);
         for (final DBHelper.GroupMember member : members) {
+            // Vytvoření položky s kulatým pozadím
             LinearLayout memberRow = new LinearLayout(this);
             memberRow.setOrientation(LinearLayout.VERTICAL);
             memberRow.setPadding(16, 16, 16, 16);
-            memberRow.setBackgroundColor(0xFFCCCCCC);
+            memberRow.setBackgroundResource(R.drawable.rounded_list_item);
 
             // Jméno člena
             TextView nameTextView = new TextView(this);
             nameTextView.setText(member.name);
             nameTextView.setTextSize(20);
-            nameTextView.setTextColor(0xFF000000);
+            nameTextView.setTextColor(getResources().getColor(android.R.color.white));
             memberRow.addView(nameTextView);
 
             // Násobitel
             TextView multiplierTextView = new TextView(this);
             multiplierTextView.setText("Násobitel: " + member.multiplier);
             multiplierTextView.setTextSize(14);
-            multiplierTextView.setTextColor(0xFF555555);
+            multiplierTextView.setTextColor(getResources().getColor(android.R.color.white));
             memberRow.addView(multiplierTextView);
 
             // Celková útrata
@@ -160,10 +163,10 @@ public class GroupActivity extends AppCompatActivity {
             TextView totalTextView = new TextView(this);
             totalTextView.setText("Celková útrata: " + totalExpense + " Kč");
             totalTextView.setTextSize(14);
-            totalTextView.setTextColor(0xFF555555);
+            totalTextView.setTextColor(getResources().getColor(android.R.color.white));
             memberRow.addView(totalTextView);
 
-            // Řádek s tlačítky Edit a Smazat
+            // Horizontální řádek pro tlačítka Edit a Smazat
             LinearLayout buttonRow = new LinearLayout(this);
             buttonRow.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -177,7 +180,7 @@ public class GroupActivity extends AppCompatActivity {
 
             memberRow.addView(buttonRow);
 
-            // Kliknutí na tlačítko Edit vyvolá dialog pro úpravu člena
+            // Edit tlačítko: vyvolá dialog pro úpravu člena
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,7 +188,7 @@ public class GroupActivity extends AppCompatActivity {
                 }
             });
 
-            // Kliknutí na tlačítko Smazat odstraní člena a aktualizuje seznam
+            // Delete tlačítko: odstraní člena
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -212,10 +215,50 @@ public class GroupActivity extends AppCompatActivity {
         }
     }
 
+    private void showEditMemberDialog(final DBHelper.GroupMember member) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Upravit člena");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        final EditText nameInput = new EditText(this);
+        nameInput.setHint("Jméno člena");
+        nameInput.setText(member.name);
+        layout.addView(nameInput);
+
+        final EditText multiplierInput = new EditText(this);
+        multiplierInput.setHint("Násobitel (např. 1)");
+        multiplierInput.setInputType(InputType.TYPE_CLASS_NUMBER);
+        multiplierInput.setText(String.valueOf(member.multiplier));
+        layout.addView(multiplierInput);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("Uložit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newName = nameInput.getText().toString().trim();
+                String newMultStr = multiplierInput.getText().toString().trim();
+                if(newName.isEmpty() || newMultStr.isEmpty()){
+                    Toast.makeText(GroupActivity.this, "Jméno a násobitel jsou povinné", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int newMultiplier = Integer.parseInt(newMultStr);
+                dbHelper.updateGroupMember(member.gmId, newName, newMultiplier);
+                Toast.makeText(GroupActivity.this, "Člen upraven", Toast.LENGTH_SHORT).show();
+                loadGroupMembers();
+                updateSettlement();
+            }
+        });
+        builder.setNegativeButton("Zrušit", null);
+        builder.show();
+    }
+
     private double computeTotalExpenseForMember(int memberId) {
         double total = 0;
         ArrayList<DBHelper.Expense> expenses = dbHelper.getExpensesForMember(memberId);
-        if (expenses != null) {
+        if(expenses != null) {
             for (DBHelper.Expense exp : expenses) {
                 total += exp.amount;
             }
@@ -226,7 +269,7 @@ public class GroupActivity extends AppCompatActivity {
     private void updateSettlement() {
         List<DBHelper.GroupMember> members = dbHelper.getGroupMembers(groupId);
         String settlementText = computeSettlements(members);
-        settlementSummaryTextView.setText(settlementText);
+        settlementSummaryTextView.setText(Html.fromHtml(settlementText));
     }
 
     private String computeSettlements(List<DBHelper.GroupMember> members) {
@@ -267,12 +310,16 @@ public class GroupActivity extends AppCompatActivity {
                 if (owe <= 0) break;
                 if (creditor.diff <= 0) continue;
                 double pay = Math.min(owe, creditor.diff);
-                result.append(debtor.name)
+                result.append("<font color='#FF0000'>")
+                        .append(debtor.name)
+                        .append("</font>")
                         .append(" má zaplatit ")
+                        .append("<font color='#00FF00'>")
                         .append(creditor.name)
+                        .append("</font>")
                         .append(": ")
                         .append(String.format("%.2f", pay))
-                        .append(" Kč\n");
+                        .append(" Kč<br>");
                 debtor.diff += pay;
                 creditor.diff -= pay;
                 owe -= pay;
@@ -288,48 +335,4 @@ public class GroupActivity extends AppCompatActivity {
         loadGroupMembers();
         updateSettlement();
     }
-
-
-    private void showEditMemberDialog(final DBHelper.GroupMember member) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Upravit údaje o členu");
-
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        final EditText nameInput = new EditText(this);
-        nameInput.setHint("Jméno člena");
-        nameInput.setText(member.name);
-        layout.addView(nameInput);
-
-        final EditText multiplierInput = new EditText(this);
-        multiplierInput.setHint("Násobitel");
-        multiplierInput.setInputType(InputType.TYPE_CLASS_NUMBER);
-        multiplierInput.setText(String.valueOf(member.multiplier));
-        layout.addView(multiplierInput);
-
-        builder.setView(layout);
-
-        builder.setPositiveButton("Uložit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newName = nameInput.getText().toString().trim();
-                String newMultStr = multiplierInput.getText().toString().trim();
-                if(newName.isEmpty() || newMultStr.isEmpty()){
-                    Toast.makeText(GroupActivity.this, "Jméno a násobitel jsou povinné", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                int newMultiplier = Integer.parseInt(newMultStr);
-                dbHelper.updateGroupMember(member.gmId, newName, newMultiplier);
-                Toast.makeText(GroupActivity.this, "Člen upraven", Toast.LENGTH_SHORT).show();
-                loadGroupMembers();
-                updateSettlement();
-            }
-        });
-
-        builder.setNegativeButton("Zrušit", null);
-        builder.show();
-    }
-
-
 }

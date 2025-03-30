@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="gray">#808080</color>         <!-- Standardní šedá -->
-    <color name="gray_dark">#606060</color>    <!-- Tmavší šedá pro tlačítka -->
-    <color name="white">#FFFFFF</color>
+    <!-- Globální barvy -->
+    <color name="background">#000000</color>         <!-- Černé pozadí -->
+    <color name="colorPrimary">#1C1C1C</color>       <!-- Tmavá černá pro toolbar -->
+    <color name="colorAccent">#606060</color>        <!-- Šedá pro tlačítka a zvýraznění -->
+    <color name="textPrimary">#FFFFFF</color>        <!-- Bílý text -->
+    <color name="cardBackground">#2B2B2B</color>     <!-- Tmavě šedá pro zaoblené karty -->
 </resources>

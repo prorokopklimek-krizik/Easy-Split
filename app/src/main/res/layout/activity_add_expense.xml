@@ -22,7 +22,8 @@
             android:id="@+id/expenseNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Název utraty"/>
+            android:hint="Název utraty"
+            android:textColor="@color/textPrimary"/>
 
         <!-- Částka utraty (povinné) -->
         <EditText
@@ -55,7 +56,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Vybrat lokaci na mapě"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/textPrimary"
+            />
 
         <!-- Tlačítko pro focení účtenky -->
         <Button
@@ -63,7 +67,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Focení účtenky"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/textPrimary"
+            />
 
         <!-- ImageView pro zobrazení fotografie účtenky -->
         <ImageView
@@ -79,6 +86,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Uložit utratu"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@color/textPrimary"
+            />
     </LinearLayout>
 </ScrollView>

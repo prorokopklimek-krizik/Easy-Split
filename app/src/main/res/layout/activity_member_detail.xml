@@ -1,50 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/background"
     android:padding="16dp">
 
-    <!-- Hlavička s jménem člena a jeho násobitelem -->
-    <LinearLayout
+    <!-- Toolbar – titulek bude nastaven dynamicky jako jméno člena -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/memberToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/textPrimary" />
 
-        <TextView
-            android:id="@+id/memberNameTextView"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Jméno člena"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/memberMultiplierEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Násobitel"
-            android:inputType="number"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/updateMultiplierButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Upravit" />
-    </LinearLayout>
-
-    <!-- Tlačítko pro přidání nové utraty -->
+    <!-- Tlačítko pro přidání nového výdaje -->
     <Button
         android:id="@+id/addExpenseButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Přidat novou utratu"
+        android:text="Přidat výdaj"
+        android:backgroundTint="@color/colorAccent"
+        android:textColor="@color/textPrimary"
         android:layout_marginTop="8dp" />
 
-    <!-- Kontejner pro seznam utrat -->
+    <!-- Kontejner pro seznam výdajů -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

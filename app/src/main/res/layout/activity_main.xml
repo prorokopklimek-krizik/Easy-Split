@@ -6,26 +6,18 @@
     android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="@color/background">
 
-    <!-- Toolbar s tlačítkem nastavení -->
+    <!-- Toolbar s tlačítkem pro nastavení -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#808080"
+        android:background="@color/colorPrimary"
         app:title="Easy Split"
-        app:titleTextColor="#FFFFFF"
+        app:titleTextColor="@color/textPrimary"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <ImageButton
-            android:id="@+id/settings_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:src="@android:drawable/ic_menu_preferences"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Nastavení" />
     </androidx.appcompat.widget.Toolbar>
 
     <!-- EditText pro zadání názvu nové skupiny -->
@@ -35,7 +27,8 @@
         android:layout_height="wrap_content"
         android:hint="Zadejte název skupiny"
         android:background="@android:color/white"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:textColor="@color/background"/>
 
     <!-- Tlačítko pro přidání skupiny -->
     <Button
@@ -44,10 +37,10 @@
         android:layout_height="wrap_content"
         android:text="Přidat skupinu"
         android:layout_marginTop="8dp"
-        android:background="#606060"
-        android:textColor="#FFFFFF" />
+        android:background="@color/colorAccent"
+        android:textColor="@color/textPrimary" />
 
-    <!-- Kontejner pro zobrazení existujících skupin -->
+    <!-- Kontejner pro zobrazení skupin -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -60,4 +53,3 @@
             android:orientation="vertical" />
     </ScrollView>
 </LinearLayout>
-

@@ -5,14 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#FFFFFF">
+    android:background="#000000">
 
-    <!-- Toolbar – titulek se nastaví pomocí setTitle() -->
+    <!-- Toolbar – název skupiny se nastaví přes setTitle() -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/groupToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#808080" />
+        android:background="#1C1C1C" />
 
     <!-- Rozvaha – výpis vyrovnání, kdo má komu zaplatit -->
     <TextView
@@ -20,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Rozvaha: [počítám...]"
-        android:textSize="16sp"
-        android:textColor="#444444"
+        android:textSize="20dp"
+        android:textColor="#FFFFFF"
         android:padding="8dp" />
 
     <!-- Tlačítko pro přidání nového člena -->
@@ -30,9 +30,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Přidat člena"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:background="#606060"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/colorAccent"
 
-    <!-- Kontejner pro zobrazení členů skupiny -->
+        />
+
+    <!-- Kontejner pro seznam členů -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

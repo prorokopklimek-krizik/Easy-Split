@@ -21,13 +21,17 @@ import java.util.ArrayList;
 
 public class MemberDetailActivity extends AppCompatActivity {
 
-    private TextView memberNameTextView;
-    private EditText memberMultiplierEditText;
-    private Button updateMultiplierButton;
-    private Button addExpenseButton;
+    // Toolbar slouží jako záhlaví s názvem člena
+    private Toolbar toolbar;
+    // Kontejner pro seznam výdajů
     private LinearLayout expenseListContainer;
+    // Tlačítko pro přidání nové utraty
+    private Button addExpenseButton;
+    // Pomocný objekt pro databázi
     private DBHelper dbHelper;
-    private int memberId;  // Tato hodnota odpovídá gm_id v tabulce group_members
+    // Identifikátor člena (gm_id v tabulce group_members)
+    private int memberId;
+    // Jméno člena
     private String memberName;
 
     @Override
@@ -35,40 +39,24 @@ public class MemberDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_detail);
 
-        memberNameTextView = findViewById(R.id.memberNameTextView);
-        memberMultiplierEditText = findViewById(R.id.memberMultiplierEditText);
-        updateMultiplierButton = findViewById(R.id.updateMultiplierButton);
-        addExpenseButton = findViewById(R.id.addExpenseButton);
-        expenseListContainer = findViewById(R.id.expenseListContainer);
-        dbHelper = new DBHelper(this);
+        toolbar = findViewById(R.id.memberToolbar);
+        setSupportActionBar(toolbar);
 
-        // Získání informací o členu z Intentu
+        // Nastavíme titulek toolbaru na jméno člena
         memberId = getIntent().getIntExtra("memberId", -1);
         memberName = getIntent().getStringExtra("memberName");
-        if (memberId == -1 || memberName == null) {
+        if(memberId == -1 || memberName == null) {
             Toast.makeText(this, "Chyba: Neplatný identifikátor člena", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        memberNameTextView.setText(memberName);
+        getSupportActionBar().setTitle(memberName);
 
-        // Aktualizace násobitele – nyní voláme updateGroupMember (protože člen je uložen v tabulce group_members)
-        updateMultiplierButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String multiplierStr = memberMultiplierEditText.getText().toString().trim();
-                if (multiplierStr.isEmpty()) {
-                    Toast.makeText(MemberDetailActivity.this, "Zadejte násobitel", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                int newMultiplier = Integer.parseInt(multiplierStr);
-                // Použijeme metodu pro aktualizaci člena skupiny
-                dbHelper.updateGroupMember(memberId, memberName, newMultiplier);
-                Toast.makeText(MemberDetailActivity.this, "Násobitel aktualizován", Toast.LENGTH_SHORT).show();
-            }
-        });
+        addExpenseButton = findViewById(R.id.addExpenseButton);
+        expenseListContainer = findViewById(R.id.expenseListContainer);
+        dbHelper = new DBHelper(this);
 
-        // Tlačítko pro přidání nové utraty – spouští AddExpenseActivity v režimu přidání
+        // Tlačítko pro přidání nové utraty
         addExpenseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,52 +76,52 @@ public class MemberDetailActivity extends AppCompatActivity {
         if(expenses == null || expenses.isEmpty()){
             TextView emptyText = new TextView(this);
             emptyText.setText("Žádné výdaje");
+            emptyText.setTextColor(getResources().getColor(android.R.color.white));
             expenseListContainer.addView(emptyText);
             return;
         }
-        for (final DBHelper.Expense expense : expenses) {
+        for(final DBHelper.Expense expense : expenses) {
             // Kontejner pro jednu utratu
             LinearLayout expenseRow = new LinearLayout(this);
             expenseRow.setOrientation(LinearLayout.VERTICAL);
             expenseRow.setPadding(16, 16, 16, 16);
-            expenseRow.setBackgroundColor(0xFFE0E0E0); // světle šedé pozadí
+            expenseRow.setBackgroundResource(R.drawable.rounded_list_item);
 
             // Název utraty – velké písmo
             TextView expenseNameTextView = new TextView(this);
             expenseNameTextView.setText(expense.name);
             expenseNameTextView.setTextSize(18);
+            expenseNameTextView.setTextColor(getResources().getColor(android.R.color.white));
             expenseRow.addView(expenseNameTextView);
 
             // Částka utraty
             TextView expenseAmountTextView = new TextView(this);
             expenseAmountTextView.setText("Částka: " + expense.amount + " Kč");
             expenseAmountTextView.setTextSize(14);
+            expenseAmountTextView.setTextColor(getResources().getColor(android.R.color.white));
             expenseRow.addView(expenseAmountTextView);
 
             // Popis, pokud existuje
-            if (expense.description != null && !expense.description.isEmpty()) {
+            if(expense.description != null && !expense.description.isEmpty()){
                 TextView expenseDescTextView = new TextView(this);
                 expenseDescTextView.setText("Popis: " + expense.description);
                 expenseDescTextView.setTextSize(14);
+                expenseDescTextView.setTextColor(getResources().getColor(android.R.color.white));
                 expenseRow.addView(expenseDescTextView);
             }
 
             // Zobrazení fotografie účtenky, pokud je k dispozici
-            if (expense.photo != null && !expense.photo.isEmpty()) {
+            if(expense.photo != null && !expense.photo.isEmpty()){
                 ImageView photoView = new ImageView(this);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT, 400);
                 photoView.setLayoutParams(lp);
                 photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                try {
-                    photoView.setImageURI(Uri.parse(expense.photo));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                photoView.setImageURI(Uri.parse(expense.photo));
                 expenseRow.addView(photoView);
             }
 
-            // Řádek s tlačítky pro úpravu a smazání
+            // Řádek s tlačítky Edit a Smazat
             LinearLayout buttonRow = new LinearLayout(this);
             buttonRow.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -147,7 +135,7 @@ public class MemberDetailActivity extends AppCompatActivity {
 
             expenseRow.addView(buttonRow);
 
-            // Kliknutí na tlačítko Edit – spustí AddExpenseActivity v režimu úprav
+            // Kliknutí na tlačítko Edit otevře AddExpenseActivity v režimu úprav
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -173,7 +161,7 @@ public class MemberDetailActivity extends AppCompatActivity {
                 }
             });
 
-            // Kliknutí na celý řádek rovněž spustí AddExpenseActivity pro úpravu
+            // Kliknutí na celý řádek také otevře AddExpenseActivity pro úpravu
             expenseRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

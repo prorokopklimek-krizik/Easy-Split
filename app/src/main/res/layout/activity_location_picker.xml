@@ -16,5 +16,7 @@
         android:layout_height="wrap_content"
         android:text="Uložit lokaci"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorAccent"
+        />
 </FrameLayout>
